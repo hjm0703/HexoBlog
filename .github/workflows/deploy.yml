@@ -9,7 +9,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy to Cloudflare Workers
     steps:
       - uses: actions/checkout@v3
 
@@ -22,15 +21,11 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
 
-      - name: Replace the KV namespace
-        run: sed -i 's/PRESERVED_FOR_ACTIONS/${{ secrets.KV_ID }}/g' wrangler.toml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Publish with Wrangler v3
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          packageManager: pnpm
-          preCommands: |
-            pnpm install --frozen-lockfile
-            pnpm cleanupAssets
+      - name: Deploy to Cloudflare Workers
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
