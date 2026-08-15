@@ -27,6 +27,11 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Inject KV namespace ID
+        env:
+          CF_KV_NAMESPACE_ID: ${{ secrets.KV_ID }}
+        run: sed -i "s/PRESERVED_FOR_ACTIONS/${CF_KV_NAMESPACE_ID}/" wrangler.toml
+
       - name: Deploy to Cloudflare Workers
         run: npx wrangler deploy
         env:
