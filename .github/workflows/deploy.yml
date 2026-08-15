@@ -13,18 +13,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # --- 新增：安装 pnpm ---
+      # 安装 pnpm - 自动使用 package.json 中指定的版本
       - name: Install pnpm
-        uses: pnpm/action-setup@v4  # 使用官方 action 安装 pnpm[reference:2][reference:3]
-        with:
-          version: 8  # 你可以指定具体的版本号，如 '8.15.4'，或者使用 'latest'
+        uses: pnpm/action-setup@v4
 
-      # --- 新增：设置 Node.js 并缓存依赖 (可选但推荐) ---
+      # 设置 Node.js 并缓存依赖
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # 根据你的项目需求选择
-          cache: 'pnpm'      # 启用 pnpm 依赖缓存，加速构建[reference:4]
+          node-version: '20'
+          cache: 'pnpm'
 
       - name: Replace the KV namespace
         run: sed -i 's/PRESERVED_FOR_ACTIONS/${{ secrets.KV_ID }}/g' wrangler.toml
@@ -34,7 +32,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          # wrangler-action 会自动检测 lockfile，无需显式指定 packageManager
           preCommands: |
-            pnpm install --frozen-lockfile  # 推荐使用 --frozen-lockfile 确保依赖版本一致
+            pnpm install --frozen-lockfile
             pnpm cleanupAssets
