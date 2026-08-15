@@ -3,7 +3,7 @@ import childProcess from 'child_process';
 import { build } from 'esbuild';
 import { replace } from 'esbuild-plugin-replace';
 import resolve from 'esbuild-plugin-resolve';
-import path from 'path/posix';
+import path from 'path';  // <--- 这里改为 'path'
 
 const fetchPath = path.resolve('./src/worker/utils/fetch.ts');
 (async () => {
