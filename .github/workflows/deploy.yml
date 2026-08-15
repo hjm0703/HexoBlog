@@ -7,20 +7,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  on-success:
+  deploy:
     runs-on: ubuntu-latest
-    name: Deploy
+    name: Deploy to Cloudflare Workers
     steps:
       - uses: actions/checkout@v3
+
       - name: Replace the KV namespace
         run: sed -i 's/PRESERVED_FOR_ACTIONS/${{ secrets.KV_ID }}/g' wrangler.toml
-      - name: Publish
-        uses: lixiang810/wrangler-action@1.4.0-node16
+
+      - name: Publish with Wrangler v3
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
           preCommands: |
             corepack enable
             pnpm install
             pnpm cleanupAssets
-        env:
-          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
