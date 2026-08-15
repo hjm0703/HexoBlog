@@ -13,11 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # 安装 pnpm - 自动使用 package.json 中指定的版本
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
-      # 设置 Node.js 并缓存依赖
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -32,6 +30,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          packageManager: pnpm
           preCommands: |
             pnpm install --frozen-lockfile
             pnpm cleanupAssets
