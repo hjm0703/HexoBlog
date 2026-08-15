@@ -5,6 +5,15 @@
   "main": "./dist/worker.js",
   "dir": "./dist",
   "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "workerd",
+      "sharp",
+      "core-js",
+      "core-js-pure"
+    ]
+  },
   "scripts": {
     "build": "pnpm build:frontend && pnpm build:worker",
     "build:worker": "node build.mjs",
