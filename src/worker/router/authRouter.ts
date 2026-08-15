@@ -1,6 +1,6 @@
 import jwt from '@tsndr/cloudflare-worker-jwt';
 import { createVerifier } from '@glenstack/cf-workers-hcaptcha';
-import { dcodeIO } from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import router from '../router';
 
 const verify = createVerifier('0xF24bDe5b5952796aE9aB9faf3885F6CB4a0c60a0');
@@ -19,7 +19,7 @@ const authRouter = () => {
     const savedPassword = await HSPKV.get('password');
     const objToSign = { exp: Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 7) };
     if (savedPassword) {
-      const res = await dcodeIO.bcrypt.compare(req.parsedJson.password, savedPassword);
+      const res = await bcrypt.compare(req.parsedJson.password, savedPassword);
       if (!res) return new Response(null, { status: 401 });
       const signed = await jwt.sign(objToSign, JWT_SECRET);
       return new Response(JSON.stringify({ signed }), {
@@ -27,7 +27,7 @@ const authRouter = () => {
         status: 200,
       });
     }
-    const passwordHash = await dcodeIO.bcrypt.hash(req.parsedJson.password, 10);
+    const passwordHash = await bcrypt.hash(req.parsedJson.password, 10);
     await HSPKV.put('password', passwordHash);
     const signed = await jwt.sign(objToSign, JWT_SECRET);
     return new Response(JSON.stringify({ signed }), {
