@@ -1,28 +1,13 @@
 name = "hexo-sharp"
-type = "javascript"
-zone_id = ""
-route = ""
+main = "dist/worker.js"
+compatibility_date = "2023-05-18"
 workers_dev = true
-compatibility_date = "2022-04-04"
 
-kv_namespaces = [{ binding = "HSPKV", id = "PRESERVED_FOR_ACTIONS" }]
+# KV 命名空间绑定
+[[kv_namespaces]]
+binding = "HSPKV"
+id = "PRESERVED_FOR_ACTIONS"
 
-[build]
-command = "pnpm build"
-
-[build.upload]
-format = "service-worker"
-
-[site]
-bucket = './dist'
-entry-point = './'
-exclude = ["worker.js", "worker.js.map"]
-
-# [secrets]
-# JWT_SECRET
-
-[miniflare]
-kv_persist = true
-
-[miniflare.globals]
-JWT_SECRET = "1145141919810"
+# 静态资源（前端构建产物）
+[assets]
+directory = "./dist"
